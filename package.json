@@ -9,10 +9,14 @@
     "@types/react-dom": "16.9.3",
     "antd": "^3.24.3",
     "axios": "^0.19.0",
+    "bootstrap": "3",
+    "jquery": "^3.4.1",
     "node-sass": "^4.13.0",
+    "npm": "^6.12.1",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
     "react-scripts": "3.2.0",
+    "tableexport": "^5.2.0",
     "typescript": "3.6.4"
   },
   "scripts": {
@@ -21,7 +25,12 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "start-electron": "yarn workspace pubg-data-electron-main start-app",
-    "electron-dev": "concurrently 'yarn start' 'yarn start-electron'"
+    "electron-dev": "concurrently 'yarn start' 'yarn start-electron'",
+    "build-static-site-prod": "yarn build",
+    "prebuild:prod:windows": "yarn build-static-site-prod",
+    "prebuild:prod:macos": "yarn build-static-site-prod",
+    "build:prod:windows": "yarn workspace pubg-data-electron-main build-windows:prod",
+    "build:prod:macos": "yarn workspace @conan/electron-app-main build-macos:prod"
   },
   "eslintConfig": {
     "extends": "react-app"

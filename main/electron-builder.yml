@@ -1,0 +1,25 @@
+---
+appId: pubg.data
+copyright: Copyright @ 2019 灰机
+directories:
+  output: ../release/ # 打包到根目录下
+# asar: false
+extraMetadata:
+  main: lib/
+files:
+  - lib/**/*
+extraResources:
+  - from: ../build/
+    to: extraResources/renderer
+    filter:
+      - '**/*'
+win:
+  icon: resources/icon.png
+  target:
+    - nsis
+mac:
+  icon: resources/icon.png
+  extendInfo: {}
+  target:
+    - dmg
+    - zip

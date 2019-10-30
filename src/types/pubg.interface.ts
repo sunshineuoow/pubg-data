@@ -76,18 +76,24 @@ export enum GameDeathType {
   Logout = 'logout', // 退出
 }
 
+export enum GameObjectType {
+  Asset = 'asset',
+  Roster = 'roster',
+  Participant = 'participant'
+}
+
 export interface GameAssets {
-  type: 'asset';
+  type: GameObjectType.Asset;
   id: string;
 }
 
 export interface GameRoster {
-  type: 'roster';
+  type: GameObjectType.Roster;
   id: string; // 用于在included数组内寻找完整的队伍信息
 }
 
 export interface GameParticipant {
-  type: 'participant';
+  type: GameObjectType.Participant;
   id: string; // 用于在included内寻找完整的玩家信息
 }
 
@@ -196,4 +202,20 @@ export interface PubgData {
   included: gameIncludedObject[];
   links: PubgLink;
   meta: {};
+}
+
+export interface PubgTableData {
+  id: string;
+  name: string;
+  winPlace: number;
+  killPlace: number;
+  kills: number;
+  damageDealt: number;
+  DBNOs: number;
+  deathType: GameDeathType;
+  revives: number;
+  teamKills: number;
+  longestKill: number;
+  weaponsAcquired: number;
+  distance: number;
 }

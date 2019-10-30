@@ -1,13 +1,66 @@
-import React, { useState } from 'react';
-import { Select, Input, Button, message } from 'antd';
-import { Platform, platforms, PubgData } from './types/pubg.interface';
+import React, {useState} from 'react';
+import {Button, Input, message, Select, Table} from 'antd';
+import {
+  GameObjectType,
+  GameParticipantObject,
+  GameRosterObject,
+  Platform,
+  platforms,
+  PubgData,
+  PubgTableData
+} from './types/pubg.interface';
+import {getData} from './service/axios';
+import { TableExport } from 'tableexport';
 import './App.scss';
-import { getData } from './service/axios';
+
 
 // a6675d04-e700-4c60-88b2-be3a3622305a
 
+const convertData = (participant: GameParticipantObject) => {
+  const { attributes, id } = participant;
+  const { stats } = attributes;
+  const { name, winPlace, killPlace, kills, damageDealt, DBNOs, deathType, revives, teamKills, longestKill, weaponsAcquired, rideDistance, swimDistance, walkDistance } = stats;
+  const distance = rideDistance + swimDistance + walkDistance;
+
+  return {
+    id,
+    name,
+    winPlace,
+    killPlace,
+    kills,
+    damageDealt,
+    DBNOs,
+    deathType,
+    revives,
+    teamKills,
+    longestKill,
+    weaponsAcquired,
+    distance
+  }
+};
+
 const handleMatchData = (matchData: PubgData) => {
-  return matchData;
+  const rosterArr: GameRosterObject[] = [];
+  const participantArr: GameParticipantObject[] = [];
+  const result: GameParticipantObject[] = [];
+  matchData.included.forEach(obj => {
+    if (obj.type === GameObjectType.Roster) {
+      rosterArr.push(obj)
+    } else if (obj.type === GameObjectType.Participant) {
+      participantArr.push(obj)
+    }
+  });
+
+  rosterArr.sort((a, b) => (a.attributes.stats.rank <= b.attributes.stats.rank ? -1 : 1));
+  rosterArr.forEach(roster => {
+    const { data } = roster.relationships.participants;
+    const idList = data.map(v => v.id);
+    const arr = participantArr.filter(v => idList.includes(v.id));
+    arr.sort((a, b) =>(a.attributes.stats.killPlace <= b.attributes.stats.killPlace ? -1 : 1));
+    result.push(...arr);
+  });
+
+  return result.map(convertData);
 };
 
 const App: React.FC = () => {
@@ -22,6 +75,18 @@ const App: React.FC = () => {
 
     getData(platform, gameId).then(data => {
       setGameData(handleMatchData(data));
+      const tableELe = document.getElementsByTagName("table")[0];
+      new TableExport(tableELe, {
+        headers: true,
+        footers: true,
+        formats: ["xlsx", "csv", "txt"],
+        filename: gameId,
+        bootstrap: true,
+        exportButtons: true,
+        position: "top",
+        trimWhitespace: true,
+        RTL: false
+      });
     });
   }
 
@@ -54,7 +119,20 @@ const App: React.FC = () => {
         </Button>
       </header>
 
-      <section>{JSON.stringify(gameData)}</section>
+      <section>
+        <Table<PubgTableData> dataSource={gameData} rowKey="id" pagination={false}>
+          <Table.Column<PubgTableData> key="name" title="Name" dataIndex="name" />
+          <Table.Column<PubgTableData> key="winPlace" title="Win Place" dataIndex="winPlace" />
+          <Table.Column<PubgTableData> key="killPlace" title="Kill Place" dataIndex="killPlace" />
+          <Table.Column<PubgTableData> key="kills" title="Kills" dataIndex="kills" />
+          <Table.Column<PubgTableData> key="damageDealt" title="Damage Dealt" dataIndex="damageDealt" />
+          <Table.Column<PubgTableData> key="revives" title="Revives" dataIndex="revives" />
+          <Table.Column<PubgTableData> key="teamKills" title="Team Kills" dataIndex="teamKills" />
+          <Table.Column<PubgTableData> key="longestKill" title="Longest Kill" dataIndex="longestKill" />
+          <Table.Column<PubgTableData> key="weaponsAcquired" title="Weapons Acquired" dataIndex="weaponsAcquired" />
+          <Table.Column<PubgTableData> key="distance" title="Distance Travel" dataIndex="distance" />
+        </Table>
+      </section>
     </div>
   );
 };

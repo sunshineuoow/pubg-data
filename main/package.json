@@ -5,12 +5,16 @@
   "main": "src/main.js",
   "scripts": {
     "start-app": "wait-on http-get://localhost:3000 && yarn start-electron",
-    "start-electron": "electron ."
+    "start-electron": "electron .",
+    "compile-electron-prod": "tsc -p ./tsconfig.json",
+    "build-windows:prod": "yarn compile-electron-prod && electron-builder build --windows --x64",
+    "build-macos:prod": "yarn compile-electron-prod && electron-builder build --macos"
   },
   "author": "sunshineuoow",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^6.1.2",
+    "electron": "6.1.2",
+    "electron-builder": "^22.1.0",
     "electron-is-dev": "^1.1.0",
     "ts-node": "^8.4.1",
     "typescript": "^3.6.4",
