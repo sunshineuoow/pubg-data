@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "strict": true,
+    "lib": ["es2018", "dom"],
+    "outDir": "./lib"
+  },
+  "include": ["src/**/*.ts"]
+}
