@@ -1,0 +1,30 @@
+@import '~antd/dist/antd.css';
+
+.App {
+  padding: 10vh 10vw;
+
+  header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .btn-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    p {
+      margin: 0 10px 0 0;
+    }
+  }
+
+  .input {
+    width: 40vw;
+  }
+
+  section {
+    margin-top: 10vh;
+    width: 100%;
+    overflow: auto;
+  }
+}
