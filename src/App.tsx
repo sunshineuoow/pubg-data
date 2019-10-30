@@ -63,9 +63,11 @@ const handleMatchData = (matchData: PubgData) => {
   return result.map(convertData);
 };
 
+let table: TableExport;
+
 const App: React.FC = () => {
   const [platform, setPlatform] = useState(platforms[0]);
-  const [gameId, setGameId] = useState('a6675d04-e700-4c60-88b2-be3a3622305a');
+  const [gameId, setGameId] = useState('');
   const [gameData, setGameData] = useState();
 
   function getGameData() {
@@ -76,17 +78,29 @@ const App: React.FC = () => {
     getData(platform, gameId).then(data => {
       setGameData(handleMatchData(data));
       const tableELe = document.getElementsByTagName("table")[0];
-      new TableExport(tableELe, {
-        headers: true,
-        footers: true,
-        formats: ["xlsx", "csv", "txt"],
-        filename: gameId,
-        bootstrap: true,
-        exportButtons: true,
-        position: "top",
-        trimWhitespace: true,
-        RTL: false
-      });
+
+      if (table) {
+        table.reset();
+        table.remove();
+        table.update({
+          filename: gameId,
+          bootstrap: true,
+          exportButtons: true,
+          position: "top",
+        })
+      } else {
+        table = new TableExport(tableELe, {
+          headers: true,
+          footers: true,
+          formats: ["xlsx", "csv", "txt"],
+          filename: gameId,
+          bootstrap: true,
+          exportButtons: true,
+          position: "top",
+          trimWhitespace: true,
+          RTL: false
+        });
+      }
     });
   }
 

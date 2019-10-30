@@ -1,5 +1,6 @@
 {
   "name": "pubg-data-electron-main",
+  "productName": "pubg小工具-by灰机",
   "version": "1.0.0",
   "description": "",
   "main": "src/main.js",
