@@ -1,0 +1,17 @@
+.search-header {
+  display: flex;
+  justify-content: space-between;
+  .btn-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    p {
+      margin: 0 10px 0 0;
+    }
+  }
+
+  .input {
+    width: 40vw;
+  }
+}

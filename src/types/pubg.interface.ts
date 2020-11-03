@@ -1,5 +1,5 @@
 export enum Platform {
-  Steam = 'stream',
+  Steam = 'steam',
   Tournament = 'tournament',
   Kakao = 'kakao',
   Xbox = 'xbox',
@@ -53,13 +53,28 @@ export enum GameMode {
   zombieSquadFpp = 'zombie-squad-fpp',
 }
 
+export enum GameDataType {
+  Match = 'match',
+  Player = 'player',
+}
+
+export enum PubgMatchType {
+  Arcade = 'arcade',
+  Custom = 'custom',
+  Event = 'event',
+  Official = 'official',
+  Training = 'training',
+}
+
 export enum GameMap {
-  DesertMain = 'Desert_Main',
-  ErangelMain = 'Erangel_Main',
-  SavageMain = 'Savage_Main',
-  RangeMain = 'Range_Main',
-  DihorOtokMain = 'DihorOtok_Main',
-  BalticMain = 'Baltic_Main',
+  Baltic = 'Baltic_Main',
+  Desert = 'Desert_Main',
+  DihorOtok = 'DihorOtok_Main',
+  Erangel = 'Erangel_Main',
+  Range = 'Range_Main',
+  Savage = 'Savage_Main',
+  SummerLand = 'Summerland_Main',
+  Chimera = 'Chimera_Main',
 }
 
 export enum GameSeasonState {
@@ -79,25 +94,25 @@ export enum GameDeathType {
 export enum GameObjectType {
   Asset = 'asset',
   Roster = 'roster',
-  Participant = 'participant'
+  Participant = 'participant',
 }
 
-export interface GameAssets {
+interface BaseGameAssets {
   type: GameObjectType.Asset;
   id: string;
 }
 
-export interface GameRoster {
+interface BaseGameRoster {
   type: GameObjectType.Roster;
   id: string; // 用于在included数组内寻找完整的队伍信息
 }
 
-export interface GameParticipant {
+interface BaseGameParticipant {
   type: GameObjectType.Participant;
   id: string; // 用于在included内寻找完整的玩家信息
 }
 
-export type GameAssetObject = GameAssets & {
+export type PubgGameAsset = BaseGameAssets & {
   attributes: {
     URL: string; // telemetry.json的链接
     createAt: string; // 创建时间
@@ -106,7 +121,7 @@ export type GameAssetObject = GameAssets & {
   };
 };
 
-export type GameParticipantObject = GameParticipant & {
+export type PubgGameParticipant = BaseGameParticipant & {
   attributes: {
     actor: string;
     shardId: Platform;
@@ -141,7 +156,7 @@ export type GameParticipantObject = GameParticipant & {
   };
 };
 
-export type GameRosterObject = GameRoster & {
+export type PubgGameRoster = BaseGameRoster & {
   attributes: {
     shardId: Platform;
     stats: {
@@ -152,7 +167,7 @@ export type GameRosterObject = GameRoster & {
   };
   relationships: {
     participants: {
-      data: GameParticipant[];
+      data: BaseGameParticipant[];
     };
     team: {
       data: null;
@@ -160,19 +175,19 @@ export type GameRosterObject = GameRoster & {
   };
 };
 
-export type gameIncludedObject =
-  | GameAssetObject
-  | GameParticipantObject
-  | GameRosterObject;
+export type PubgGameObject =
+  | PubgGameAsset
+  | PubgGameParticipant
+  | PubgGameRoster;
 
 export interface PubgLink {
   schema?: string;
   self: string;
 }
 
-export interface PubgData {
+export interface PubgMatchData {
   data: {
-    type: 'match'; // 数据类型
+    type: GameDataType.Match; // 数据类型
     id: string; // 游戏id
     attributes: {
       createdAt: string; // 创建时间
@@ -189,17 +204,47 @@ export interface PubgData {
     };
     relationships: {
       assets: {
-        data: GameAssets[];
+        data: BaseGameAssets[];
       };
       rosters: {
-        data: GameRoster[];
+        data: BaseGameRoster[];
       };
       rounds: null;
       spectators: null;
     }; // 队伍关系
     links: PubgLink;
   };
-  included: gameIncludedObject[];
+  included: PubgGameObject[];
+  links: PubgLink;
+  meta: {};
+}
+
+export interface PubgPlayerInfo {
+  type: GameDataType.Player;
+  id: string;
+  attributes: {
+    name: string;
+    status: null;
+    titleId: string;
+    shardId: Platform;
+    patchVersion: string;
+  };
+  links: PubgLink;
+  relationships: {
+    assets: {
+      data: BaseGameAssets[];
+    };
+    matches: {
+      data: {
+        type: 'match';
+        id: string;
+      }[];
+    };
+  };
+}
+
+export interface PubgUserData {
+  data: PubgPlayerInfo[];
   links: PubgLink;
   meta: {};
 }

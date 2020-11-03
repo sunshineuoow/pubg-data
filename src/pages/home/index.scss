@@ -1,0 +1,22 @@
+.home-page {
+  text-align: center;
+  header {
+    padding-top: 10vh;
+    font-size: 30px;
+  }
+
+  footer {
+    font-size: 18px;
+  }
+
+  .btn-group {
+    margin: 10vh auto;
+    display: flex;
+    justify-content: center;
+    max-width: 80vw;
+
+    button {
+      margin: 0 10px;
+    }
+  }
+}
